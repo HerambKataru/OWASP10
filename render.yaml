@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: sentinelx-backend
+    env: python
+    rootDir: sentinelx/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SENTINELX_SECRET_KEY
+        generateValue: true
+      - key: VIRUSTOTAL_API_KEY
+        sync: false
+      - key: ABUSEIPDB_API_KEY
+        sync: false
+      - key: SHODAN_API_KEY
+        sync: false

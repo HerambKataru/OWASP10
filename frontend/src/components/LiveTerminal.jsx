@@ -20,7 +20,18 @@ export default function LiveTerminal({ activeScanId }) {
   const bottomRef = useRef(null);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8000/ws/logs');
+    const getWsUrl = () => {
+      if (import.meta.env.VITE_WS_BASE_URL) return `${import.meta.env.VITE_WS_BASE_URL}/ws/logs`;
+      if (import.meta.env.VITE_API_BASE_URL) {
+        const base = import.meta.env.VITE_API_BASE_URL.replace(/^http/, 'ws');
+        return `${base}/ws/logs`;
+      }
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host;
+      return `${protocol}//${host}/ws/logs`;
+    };
+
+    const ws = new WebSocket(getWsUrl());
 
     ws.onmessage = (event) => {
       try {
