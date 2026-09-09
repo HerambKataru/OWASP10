@@ -1,18 +1,18 @@
 # SentinelX: Technical Architecture, Methodology & Vulnerability Assessment Report
 
-**System Name:** SentinelX — Local AI-Powered OWASP Top 10 VAPT & Threat Intelligence Suite  
+**System Name:** SentinelX — Local AI-Powered OWASP Top 10:2025 VAPT & Threat Intelligence Suite  
 **Author / Team:** SentinelX Security Engineering Team  
 **Classification:** Technical Documentation & Architectural Reference  
-**Standard Compliance:** OWASP Top 10:2021, NIST SP 800-115, CWE/SANS Top 25  
-**Execution Environment:** 100% Localhost Air-Gapped / Isolated Operation  
+**Standard Compliance:** OWASP Top 10:2025, NIST SP 800-115, CWE/SANS Top 25  
+**Execution Environment:** Localhost Isolated & Production Hybrid (Docker / Render / Vercel / Firebase)  
 
 ---
 
 ## 1. Executive Overview
 
-Modern web applications present increasingly complex attack surfaces due to distributed architectures, dynamic client-side rendering, and multifaceted third-party integrations. **SentinelX** was architected as an all-in-one local security assessment workstation providing unified **Dynamic Application Security Testing (DAST)**, **Static Application Security Testing (SAST)**, **Reconnaissance**, **HTTP Analysis & Replay (Burp-like Repeater)**, and **Multi-Source Threat Intelligence Correlation**.
+Modern web applications present increasingly complex attack surfaces due to distributed microservices, single-page client rendering (SPA), API gateways, and dynamic cloud integrations. **SentinelX** was architected as a comprehensive, production-grade security assessment workstation providing unified **Dynamic Application Security Testing (DAST)**, **Static Application Security Testing (SAST)**, **Reconnaissance**, **HTTP Analysis & Replay (Burp-like Repeater)**, **AI Security Reasoning**, and **Multi-Source Threat Intelligence Correlation**.
 
-SentinelX operates under a strictly **non-destructive paradigm**, meaning that while active heuristics and probes are executed to identify vulnerabilities, the engine avoids irreversible data manipulation or disruptive denial-of-service behaviors.
+SentinelX operates under a strictly **non-destructive verification paradigm**, meaning that while rigorous active heuristics, parameter fuzzing, and boundary probes are executed to identify vulnerabilities, the engine avoids disruptive denial-of-service behaviors or persistent database destruction.
 
 ```
 +-----------------------------------------------------------------------------------+
@@ -20,14 +20,16 @@ SentinelX operates under a strictly **non-destructive paradigm**, meaning that w
 +-----------------------------------------------------------------------------------+
 |  [ FRONTEND - React + Vite + Tailwind + Recharts + Monaco Telemetry ]             |
 |    - 15 Dedicated Cyberpunk Navigation Views (Dashboard, Scanners, Intel, SAST)   |
+|    - Firebase Authentication (Secure JWT & Session State)                         |
 |    - Real-time WebSocket Live Telemetry Feed (ws://localhost:8000/ws/logs)       |
 +-----------------------------------------------------------------------------------+
                                          │  HTTP / JSON & WebSocket Events
                                          ▼
 +-----------------------------------------------------------------------------------+
-|  [ BACKEND ENGINE - FastAPI + SQLite + SQLAlchemy + Asyncio Task Workers ]        |
+|  [ BACKEND ENGINE - FastAPI + SQLite / PostgreSQL + Asyncio Task Workers ]        |
 |    - Scan Manager & Crawler Service (Recursive BFS, Form Parser, Tech Signature)  |
-|    - Risk Scoring Engine (0-100 Consolidated Heuristic with CVSS v3.1 Mapping)    |
+|    - Risk Scoring Engine (Multi-Parametric CVSS v3.1 + OWASP 2025 Weighting)      |
+|    - AI Security Advisor (Chained Attack Paths, Root Cause Triage, P0-P3 Timeline)|
 |    - ReportLab 14-Section PDF & Machine-Readable JSON Export Pipelines            |
 +-----------------------------------------------------------------------------------+
        │                   │                      │                     │
@@ -47,99 +49,100 @@ SentinelX operates under a strictly **non-destructive paradigm**, meaning that w
 
 ## 2. System Architecture & Component Design
 
-The SentinelX application is partitioned into two decoupled tiers:
-
-### 2.1 Backend Architecture (FastAPI & SQLite)
+### 2.1 Backend Architecture (FastAPI & SQLAlchemy)
 1. **Core Service Layer (`backend/services/`):**
-   - **`crawler.py`**: High-performance recursive HTTP crawler with same-domain constraint enforcement, robots.txt & sitemap.xml auto-discovery, form input parameter extraction, and JavaScript script asset mapping.
-   - **`scan_manager.py`**: Asynchronous task orchestrator executing scanners sequentially or in parallel while publishing structured live telemetry logs to the WebSocket bus.
-   - **`risk_engine.py`**: Mathematical weighted scoring model translating raw findings into a standardized 0–100 risk score and CVSS severity distribution.
+   - **`crawler.py`**: High-performance recursive HTTP crawler with same-domain constraint enforcement, `robots.txt` & `sitemap.xml` auto-discovery, form input parameter extraction, and JavaScript script asset mapping.
+   - **`scan_manager.py`**: Asynchronous task orchestrator executing scanners sequentially or in parallel while publishing structured live telemetry logs and progress percentages to the WebSocket bus.
+   - **`risk_engine.py`**: Mathematical multi-parametric scoring model translating raw findings into a standardized 0–100 risk score, exploitability index, and CVSS severity distribution.
+   - **`ai_advisor.py`**: AI threat modeling engine synthesizing root cause analysis, multi-stage chained attack paths, and prioritized remediation plans.
    - **`websocket_manager.py`**: Multi-client event multiplexer broadcasting real-time progress percentages and log messages.
 
 2. **Scanner Modular Engine (`backend/scanners/`):**
-   - Each OWASP Top 10 category is isolated into dedicated, modular Python routines with standardized signatures returning normalized `Finding` structures.
+   - Each OWASP Top 10:2025 category is isolated into dedicated, modular Python routines with standardized signatures returning normalized `Finding` structures.
 
 3. **Threat Intelligence Layer (`backend/intelligence/`):**
    - Standardized client wrappers for VirusTotal v3, AbuseIPDB v2, Shodan REST API, and NIST NVD CVE 2.0 API with local fallback mechanisms.
 
-4. **Persistence & Encryption Layer (`backend/database/`, `backend/config.py`):**
-   - SQLite persistence layer with SQLAlchemy ORM storing scans, endpoints, findings, HTTP history, and encrypted API key settings.
+4. **Persistence Layer (`backend/database/`):**
+   - SQLite / PostgreSQL persistence layer with SQLAlchemy ORM storing scans, endpoints, findings, HTTP history, and encrypted API key settings.
 
 ---
 
-### 2.2 Frontend Architecture (React + Vite + Tailwind CSS)
-- **Aesthetic Philosophy:** Dark Cyberpunk theme (`#080C14`, `#0C1220`) with neon cyan (`#00F0FF`), emerald green (`#00FF9D`), and warning amber/red accents.
-- **Interactive Visualizations:** Radial SVG Risk Gauge, Recharts Pie & Radar charts displaying OWASP Top 10 coverage, and real-time streaming terminal log with ANSI-inspired severity coloring.
-- **Navigation Topology:** 15 distinct views covering Dashboard, New Scan, Recon, HTTP Repeater, 7 OWASP scanner modules, SAST Code Viewer, Threat Intel, CVE Database, Reports, and Key Settings.
+## 3. OWASP Top 10:2025 Detection Methodologies & Heuristics
 
----
-
-## 3. OWASP Top 10:2021 Detection Methodologies & Heuristics
-
-| OWASP Category | Module | Testing Mechanism & Heuristics |
+| OWASP Top 10:2025 Category | Module | Testing Mechanism & Heuristics |
 | :--- | :--- | :--- |
-| **A01:2021 - Broken Access Control** | `idor.py` | Detects numeric object parameters (`/user/1`, `?id=10`) and generates adjacent probes (`n+1`, `n-1`, `0`). Compares status codes, body lengths, and headers to identify unauthorized horizontal privilege escalation. |
-| **A02:2021 - Cryptographic Failures** | `exposure.py` | Employs high-entropy regex pattern matching against HTML responses and JavaScript assets to detect exposed AWS Access Keys, Google Cloud Keys, Slack Webhooks, JWT tokens, and hardcoded credentials. Also flags insecure HTTP references in HTTPS contexts. |
-| **A03:2021 - Injection (SQLi & XSS)** | `sqli.py` & `xss.py` | **SQLi:** Evaluates database error signatures across MySQL, PostgreSQL, SQLite, MSSQL, and Oracle; checks Boolean response size differences; evaluates time-based sleep delays.<br/>**XSS:** Injects benign script tags and checks for unsanitized reflection in HTML context; audits JavaScript source files for dangerous DOM sinks (`innerHTML`, `eval`, `document.write`, `location.hash`). |
-| **A04:2021 - Insecure Design** | `upload.py` | Detects `<input type="file">` upload forms and sends harmless probes (`test.php.png`, `.svg` with XML text) to check MIME validation, double extension acceptance, and SVG execution hazards. |
-| **A05:2021 - Security Misconfiguration** | `headers.py` | Audits HTTP responses for missing headers: Content-Security-Policy (CSP), Strict-Transport-Security (HSTS), X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy. Flags server banner version leaks (Server, X-Powered-By). |
-| **A06:2021 - Vulnerable Components** | `static.py` & `cve.py` | Static code analysis scanning Python (`exec`, `pickle.loads`, `subprocess`), JavaScript (`eval`, `child_process`), and PHP (`system`, `shell_exec`, `unserialize`). Cross-references detected technologies against NIST NVD CVE database. |
-| **A07:2021 - Auth Failures** | `auth.py` | Audits `Set-Cookie` directives for missing `HttpOnly`, `Secure`, and `SameSite` flags. Executes burst requests against authentication endpoints to verify rate-limiting protection against brute-force credential stuffing. |
+| **A01:2025 - Broken Access Control** | `idor.py` | Detects numeric object parameters (`/user/1`, `?id=10`) and executes neighbor boundary probes (`n+1`, `n-1`, `0`, `99999`). Compares status codes, body lengths, and headers to identify unauthorized horizontal/vertical privilege escalation. |
+| **A02:2025 - Cryptographic Failures** | `exposure.py` | Employs high-entropy regex pattern matching against HTML responses and JavaScript assets to detect exposed AWS Access Keys, Google Cloud Keys, Slack Webhooks, JWT tokens, and hardcoded credentials. Also audits mixed content (insecure HTTP resources on HTTPS pages). |
+| **A03:2025 - Injection & Execution** | `sqli.py` & `xss.py` | **SQLi:** Evaluates database error signatures across MySQL, PostgreSQL, SQLite, MSSQL, and Oracle; checks Boolean response size differences; evaluates time-based sleep delays. Actively fuzzes discovered query parameters, form fields, and fallback probe parameters (`id`, `user`, `q`, `search`, `cat`, `page`).<br/>**XSS:** Injects benign script tags and checks for unsanitized reflection in HTML context; audits JavaScript source files and inline scripts for dangerous DOM sinks (`innerHTML`, `eval`, `document.write`, `location.hash`, `location.search`). |
+| **A04:2025 - Insecure Architecture & Design** | `upload.py` | Detects `<input type="file">` upload forms and candidate upload endpoints (`/upload`, `/api/upload`), sending harmless probes (`test.php.png`, `.svg` with XML text) to check MIME validation, double extension acceptance, and SVG execution hazards. |
+| **A05:2025 - Security Misconfiguration** | `headers.py` | Audits HTTP responses for missing headers: Content-Security-Policy (CSP), Strict-Transport-Security (HSTS), X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy. Flags server banner version leaks (`Server`, `X-Powered-By`). |
+| **A06:2025 - Vulnerable & Outdated Dependencies** | `static.py` & `cve.py` | Static code analysis scanning Python (`exec`, `pickle.loads`, `subprocess`), JavaScript (`eval`, `child_process`), and PHP (`system`, `shell_exec`, `unserialize`). Cross-references detected technologies against NIST NVD CVE database. |
+| **A07:2025 - Identification & Authentication Failures** | `auth.py` | Audits `Set-Cookie` directives for missing `HttpOnly`, `Secure`, and `SameSite` flags. Executes burst requests against authentication endpoints (`/login`, `/signin`, `/admin`, `/api/auth`) to verify rate-limiting protection against brute-force credential stuffing. |
+| **A08:2025 - Software and Data Integrity Failures** | `static.py` | Flags unsafe dynamic deserialization (`pickle.loads`, `unserialize`) and dynamic code execution patterns in source code archives. |
+| **A09:2025 - Security Logging & Anomaly Failures** | `risk_engine.py` | Identifies missing rate limit response headers (`X-RateLimit-*`, `Retry-After`) and unhandled stack trace disclosures. |
+| **A10:2025 - Server-Side Request Forgery (SSRF)** | `recon.py` | Audits URL redirect parameters (`?redirect=`, `?url=`, `?dest=`) and probes internal network boundary references. |
 
 ---
 
-## 4. Mathematical Risk Engine Formulation
+## 4. Advanced Multi-Parametric Risk Scoring Model
 
-The overall application Risk Score ($R$) is calculated as an aggregated weighted function bounded between $0.0$ and $100.0$:
+SentinelX implements a real mathematical risk evaluation model based on multi-factorial aggregation:
 
-$$R = \min\left(100.0, \sum_{i=1}^{N} W(S_i)\right)$$
+### 4.1 Base Weighted Formulation
+The raw weighted vulnerability score ($S_{\text{raw}}$) is computed from severity counts and categorical weights:
 
-Where $S_i$ denotes the severity classification of finding $i$, and the weight function $W(S)$ is defined as:
+$$S_{\text{raw}} = \sum_{k \in \text{Findings}} W(\text{Severity}_k) \cdot W_{\text{OWASP}}(\text{Category}_k)$$
 
-$$W(\text{Critical}) = 25.0$$
-$$W(\text{High}) = 15.0$$
-$$W(\text{Medium}) = 8.0$$
-$$W(\text{Low}) = 3.0$$
-$$W(\text{Informational}) = 0.5$$
+Where base severity weights $W(\text{Severity})$ are defined as:
+- $\text{Critical} = 25.0$
+- $\text{High} = 15.0$
+- $\text{Medium} = 8.0$
+- $\text{Low} = 3.0$
+- $\text{Informational} = 0.5$
 
-Qualitative risk tiering is categorized as:
-- **$R \ge 75.0$:** Critical Risk (Immediate remediation mandatory)
-- **$50.0 \le R < 75.0$:** High Risk (Significant exploitable attack surface)
-- **$25.0 \le R < 50.0$:** Moderate Risk (Security misconfigurations present)
-- **$0.0 < R < 25.0$:** Low Risk (Minor hygiene & informational findings)
-- **$R = 0.0$:** Clean (No vulnerabilities identified)
+### 4.2 Compounding Attack Surface Multipliers
+1. **Categorical Diversity Factor ($F_{\text{div}}$):** Having multiple distinct vulnerability classes (e.g. SQLi + Auth Bypass + IDOR) creates synergistic exploitation opportunities:
+   $$F_{\text{div}} = 1.0 + (\min(|\text{Categories}|, 6) \times 0.08)$$
+
+2. **Attack Surface Multiplier ($F_{\text{surface}}$):** Scaled against the number of accessible endpoints ($E$) and form inputs ($I$):
+   $$F_{\text{surface}} = 1.0 + \min\left(0.35, (E \times 0.015) + (I \times 0.025)\right)$$
+
+3. **Threat Intelligence Factor ($F_{\text{threat}}$):** Enriches internal findings with external threat reputation scores ($T_{\text{intel}} \in [0, 100]$):
+   $$F_{\text{threat}} = 1.0 + \min\left(0.20, \frac{T_{\text{intel}}}{100.0} \times 0.20\right)$$
+
+### 4.3 Sigmoid Bounding & Floor Calculation
+The final risk score ($R \in [0.0, 100.0]$) is calculated with severity floor enforcement:
+
+$$R_{\text{combined}} = S_{\text{raw}} \cdot F_{\text{div}} \cdot F_{\text{surface}} \cdot F_{\text{threat}}$$
+
+$$\text{Final Risk Score } R = 
+\begin{cases} 
+\max(70.0, \min(100.0, 70.0 + 0.35 \cdot R_{\text{combined}})), & \text{if } N_{\text{crit}} > 0 \\
+\max(45.0, \min(89.0, 45.0 + 0.45 \cdot R_{\text{combined}})), & \text{if } N_{\text{high}} > 0 \\
+\max(20.0, \min(65.0, 20.0 + 0.55 \cdot R_{\text{combined}})), & \text{if } N_{\text{med}} > 0 \\
+\min(35.0, 0.8 \cdot R_{\text{combined}}), & \text{otherwise}
+\end{cases}$$
+
+### 4.4 Qualitative Tiering
+- **$R \ge 75.0$:** **CRITICAL RISK** (Immediate remediation mandatory before production)
+- **$50.0 \le R < 75.0$:** **HIGH RISK** (Significant exploitable attack surface)
+- **$25.0 \le R < 50.0$:** **MODERATE RISK** (Security misconfigurations present)
+- **$0.0 < R < 25.0$:** **LOW RISK** (Minor hygiene & informational findings)
+- **$R = 0.0$:** **CLEAN** (No vulnerabilities identified)
 
 ---
 
-## 5. Threat Intelligence Enrichment Pipeline
+## 5. AI Security Advisor Engine
 
-```
-                     ┌──────────────────┐
-                     │ Target Domain/IP │
-                     └────────┬─────────┘
-                              │
-         ┌────────────────────┼────────────────────┐
-         ▼                    ▼                    ▼
- ┌───────────────┐    ┌───────────────┐    ┌───────────────┐
- │  VirusTotal   │    │   AbuseIPDB   │    │    Shodan     │
- │ - Reputation  │    │ - Abuse Score │    │ - Open Ports  │
- │ - Detection % │    │ - ISP / Geo   │    │ - SSL Certs   │
- │ - Hash Lookup │    │ - Report Hist │    │ - Svc Banners │
- └───────┬───────┘    └───────┬───────┘    └───────┬───────┘
-         │                    │                    │
-         └────────────────────┼────────────────────┘
-                              ▼
-                     ┌──────────────────┐
-                     │ SentinelX Engine │
-                     │ Multi-Factor     │
-                     │ Correlation Card │
-                     └──────────────────┘
-```
-
-1. **VirusTotal v3:** Aggregates reputation scores across 70+ security vendors, providing malicious/suspicious detection ratios and domain categorization.
-2. **AbuseIPDB v2:** Calculates real-time IP abuse confidence percentages, identifies hosting provider/ISP ASN details, and checks historical incident reports.
-3. **Shodan:** Passively collects open listening ports, running services, and server banners without direct intrusive port scanning.
-4. **NIST NVD CVE v2.0:** Live query client retrieving CVSS v3.1 base metrics, published dates, and official vulnerability references for detected software stacks.
+The SentinelX AI Security Advisor synthesizes multi-dimensional telemetry into actionable executive intelligence:
+1. **Executive Threat Summary:** Generates contextual natural-language assessments detailing organizational exposure and compliance implications.
+2. **Chained Attack Path Modeling:** Maps how an adversary can chain low/medium findings (e.g. Server Banner Leak $\rightarrow$ Known CVE $\rightarrow$ Reflected XSS $\rightarrow$ Session Hijacking $\rightarrow$ IDOR) into full system compromise.
+3. **Remediation Prioritization Timeline (P0–P3):**
+   - **P0 - Immediate (< 24h):** SQL Injection, RCE, Deserialization, Unauthenticated IDOR.
+   - **P1 - High (< 48h):** Reflected XSS, Hardcoded High-Entropy Secrets, Auth Rate Limiting.
+   - **P2 - Medium (< 1 Week):** Cookie Security Flags (`HttpOnly`, `Secure`, `SameSite`), Missing CSP/HSTS.
+   - **P3 - Hardening (< 2 Weeks):** Server Banner Suppression, Mixed Content Remediation.
 
 ---
 
@@ -159,20 +162,20 @@ SentinelX generates formal 14-section assessment reports via ReportLab:
 1. **Cover Page:** Formal classification, target metadata, assessment timestamps, and confidentiality notices.
 2. **Executive Summary:** Consolidated risk metrics and severity distribution tables.
 3. **Target Scope:** Documented URI boundaries and crawl depth limits.
-4. **Methodology:** OWASP OTG v4 and NIST SP 800-115 testing framework references.
+4. **Methodology:** OWASP Top 10:2025 and NIST SP 800-115 testing framework references.
 5. **Reconnaissance Results:** Discovered URI routes and input parameter matrices.
 6. **Technology Stack:** Fingerprinted backend frameworks, web servers, and client libraries.
 7. **Threat Intelligence:** Correlated external domain reputation and IP history.
 8. **Detailed OWASP Findings:** Individual findings formatted with CVSS badges, vulnerable parameters, payload strings, proof-of-concept evidence, and specific remediation advice.
 9. **Payloads Used:** Summary of non-destructive verification strings.
 10. **HTTP Evidence:** Request/response snippets and headers.
-11. **Screenshots / Visual Telemetry:** Telemetry data mapping.
+11. **Visual Telemetry:** Telemetry data mapping.
 12. **CVE & CWE Mapping:** Standard compliance categorization.
 13. **Remediation Roadmap:** Prioritized developer action plan.
 14. **Appendix:** Assessment tool versioning and methodology sign-off.
 
 ---
 
-## 8. Conclusion & Security Recommendations
+## 8. Conclusion & Operational Baseline
 
-SentinelX provides security engineers, developers, and penetration testers with a unified local workstation for discovering, validating, and remediating OWASP Top 10 vulnerabilities before deployment. By integrating DAST automation, SAST inspection, and threat intelligence in an air-gapped, non-destructive architecture, SentinelX establishes a defensible security baseline for modern web applications.
+SentinelX provides security engineers, developers, and penetration testers with a unified workstation for discovering, validating, and remediating OWASP Top 10:2025 vulnerabilities before deployment. By integrating DAST parameter fuzzing, SAST inspection, AI threat correlation, and threat intelligence in a modular architecture, SentinelX establishes a defensible, production-ready security baseline for modern web applications.

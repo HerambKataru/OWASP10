@@ -100,6 +100,7 @@ export default function Dashboard({ currentScan }) {
     { category: 'A03:Injection', count: findings.filter(f => ['sqli', 'xss'].includes(f.category)).length },
     { category: 'A04:Design', count: findings.filter(f => f.category === 'upload').length },
     { category: 'A05:Misconfig', count: findings.filter(f => f.category === 'headers').length },
+    { category: 'A06:Outdated', count: findings.filter(f => ['static', 'cve'].includes(f.category)).length },
     { category: 'A07:Auth', count: findings.filter(f => f.category === 'auth').length },
   ];
 
@@ -280,7 +281,7 @@ export default function Dashboard({ currentScan }) {
         <div className="rounded-2xl border border-slate-800 bg-[#0C1220] p-5 flex flex-col justify-between shadow-xl">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-semibold text-slate-200">OWASP Top 10 Coverage</h3>
-            <span className="text-[10px] font-mono text-cyan-400">2021 Benchmark</span>
+            <span className="text-[10px] font-mono text-cyan-400">2025 Benchmark</span>
           </div>
 
           <div className="h-48">

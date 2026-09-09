@@ -9,12 +9,16 @@ SAFE_UPLOAD_PROBES = [
     {"filename": "sentinelx_probe.php.png", "mime": "image/png", "content": b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDRSentinelX"}
 ]
 
+COMMON_UPLOAD_PATHS = ["/upload", "/api/upload", "/api/v1/upload", "/file-upload"]
+
 def scan_upload(endpoints: List[Dict[str, Any]], headers: Dict[str, str], timeout: int = 6, log_callback=None) -> List[Dict[str, Any]]:
     findings = []
+    audited_actions = set()
 
     for ep in endpoints:
         forms = ep.get("forms", [])
         page_url = ep.get("url", "")
+        if not page_url: continue
 
         for form in forms:
             action_url = form.get("action", page_url)
@@ -24,6 +28,9 @@ def scan_upload(endpoints: List[Dict[str, Any]], headers: Dict[str, str], timeou
             file_inputs = [inp for inp in inputs if inp.get("type") == "file"]
             if not file_inputs:
                 continue
+
+            if action_url in audited_actions: continue
+            audited_actions.add(action_url)
 
             if log_callback:
                 log_callback(f"Auditing File Upload handler on form: {action_url}")
@@ -42,7 +49,7 @@ def scan_upload(endpoints: List[Dict[str, Any]], headers: Dict[str, str], timeou
                         if "php.png" in probe["filename"] and res.status_code in [200, 201]:
                             findings.append({
                                 "category": "upload",
-                                "owasp_category": "A04:2021-Insecure Design",
+                                "owasp_category": "A04:2025-Insecure Architecture & Design",
                                 "severity": "Medium",
                                 "title": f"Potential Unrestricted File Upload / Double Extension Handling on '{f_name}'",
                                 "description": f"The form accepted a double extension payload ({probe['filename']}) without explicit rejection.",
@@ -59,7 +66,7 @@ def scan_upload(endpoints: List[Dict[str, Any]], headers: Dict[str, str], timeou
                         if ".svg" in probe["filename"] and res.status_code in [200, 201]:
                             findings.append({
                                 "category": "upload",
-                                "owasp_category": "A04:2021-Insecure Design",
+                                "owasp_category": "A04:2025-Insecure Architecture & Design",
                                 "severity": "Low",
                                 "title": f"SVG File Upload Allowed on '{f_name}'",
                                 "description": f"The server accepted an SVG image. SVGs can embed inline JavaScript payloads leading to Stored XSS if served directly.",

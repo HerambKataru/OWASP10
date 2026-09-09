@@ -20,16 +20,16 @@ class RiskEngine:
     }
 
     OWASP_WEIGHTS = {
-        "A01:2021-Broken Access Control": 1.4,
-        "A02:2021-Cryptographic Failures": 1.2,
-        "A03:2021-Injection": 1.5,
-        "A04:2021-Insecure Design": 1.2,
-        "A05:2021-Security Misconfiguration": 1.0,
-        "A06:2021-Vulnerable and Outdated Components": 1.3,
-        "A07:2021-Identification and Authentication Failures": 1.4,
-        "A08:2021-Software and Data Integrity Failures": 1.2,
-        "A09:2021-Security Logging and Monitoring Failures": 1.0,
-        "A10:2021-Server-Side Request Forgery": 1.4
+        "A01:2025-Broken Access Control": 1.4,
+        "A02:2025-Cryptographic Failures": 1.2,
+        "A03:2025-Injection & Execution": 1.5,
+        "A04:2025-Insecure Architecture & Design": 1.2,
+        "A05:2025-Security Misconfiguration": 1.0,
+        "A06:2025-Vulnerable and Outdated Dependencies": 1.3,
+        "A07:2025-Identification and Authentication Failures": 1.4,
+        "A08:2025-Software and Data Integrity Failures": 1.2,
+        "A09:2025-Security Logging & Anomaly Failures": 1.0,
+        "A10:2025-Server-Side Request Forgery": 1.4
     }
 
     @classmethod
@@ -137,7 +137,7 @@ class RiskEngine:
         
         owasp_dist = {}
         for f in findings:
-            cat = f.get("owasp_category", "A05:2021-Security Misconfiguration")
+            cat = f.get("owasp_category", "A05:2025-Security Misconfiguration")
             owasp_dist[cat] = owasp_dist.get(cat, 0) + 1
 
         res["owasp_distribution"] = owasp_dist

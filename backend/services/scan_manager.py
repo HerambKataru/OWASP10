@@ -168,7 +168,7 @@ class ScanManager:
                 finding_row = Finding(
                     scan_id=scan_id,
                     category=f.get("category", "general"),
-                    owasp_category=f.get("owasp_category", "A05:2021-Security Misconfiguration"),
+                    owasp_category=f.get("owasp_category", "A05:2025-Security Misconfiguration"),
                     severity=f.get("severity", "Medium"),
                     title=f.get("title", ""),
                     description=f.get("description", ""),

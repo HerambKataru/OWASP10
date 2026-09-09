@@ -161,7 +161,7 @@ def analyze_source_directory(root_dir: str, log_callback=None) -> Dict[str, Any]
                                     snippet = line.strip()
                                     findings.append({
                                         "category": "static",
-                                        "owasp_category": "A06:2021-Vulnerable and Outdated Components",
+                                        "owasp_category": "A06:2025-Vulnerable and Outdated Dependencies",
                                         "severity": rule["severity"],
                                         "title": rule["title"],
                                         "description": rule["desc"],

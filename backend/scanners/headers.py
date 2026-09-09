@@ -65,7 +65,7 @@ def scan_headers(target_url: str, headers: Dict[str, str], log_callback=None) ->
         if h_name not in headers_lower:
             findings.append({
                 "category": "headers",
-                "owasp_category": "A05:2021-Security Misconfiguration",
+                "owasp_category": "A05:2025-Security Misconfiguration",
                 "severity": item["severity"],
                 "title": item["title"],
                 "description": item["desc"],
@@ -83,7 +83,7 @@ def scan_headers(target_url: str, headers: Dict[str, str], log_callback=None) ->
     if server_banner and (re.search(r'[\d\.]+', server_banner) or "apache" in server_banner or "nginx" in server_banner):
         findings.append({
             "category": "headers",
-            "owasp_category": "A05:2021-Security Misconfiguration",
+            "owasp_category": "A05:2025-Security Misconfiguration",
             "severity": "Low",
             "title": f"Detailed Server Software Version Disclosure ({server_banner})",
             "description": "The server exposes its detailed software name and version in the 'Server' header, aiding attackers in vulnerability targeting.",
@@ -101,7 +101,7 @@ def scan_headers(target_url: str, headers: Dict[str, str], log_callback=None) ->
     if powered_by:
         findings.append({
             "category": "headers",
-            "owasp_category": "A05:2021-Security Misconfiguration",
+            "owasp_category": "A05:2025-Security Misconfiguration",
             "severity": "Low",
             "title": f"Framework Technology Disclosure ({powered_by})",
             "description": "The application returns 'X-Powered-By' disclosing underlying backend framework details.",

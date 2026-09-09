@@ -54,7 +54,7 @@ async def upload_and_analyze_project(file: UploadFile = File(...), db: Session =
             finding_row = Finding(
                 scan_id=scan.id,
                 category="static",
-                owasp_category=f.get("owasp_category", "A06:2021-Vulnerable and Outdated Components"),
+                owasp_category=f.get("owasp_category", "A06:2025-Vulnerable and Outdated Dependencies"),
                 severity=f.get("severity", "Medium"),
                 title=f.get("title", ""),
                 description=f.get("description", ""),

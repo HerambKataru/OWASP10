@@ -74,7 +74,7 @@ def scan_exposure(endpoints: List[Dict[str, Any]], js_files: List[str], headers:
                     
                     findings.append({
                         "category": "exposure",
-                        "owasp_category": "A02:2021-Cryptographic Failures",
+                        "owasp_category": "A02:2025-Cryptographic Failures",
                         "severity": item["severity"],
                         "title": f"Hardcoded {item['name']} Exposed in Client Asset",
                         "description": f"A potential sensitive credential matching pattern for {item['name']} was identified in the HTTP response or script file.",
@@ -94,7 +94,7 @@ def scan_exposure(endpoints: List[Dict[str, Any]], js_files: List[str], headers:
                     sample = insecure_links[0]
                     findings.append({
                         "category": "exposure",
-                        "owasp_category": "A02:2021-Cryptographic Failures",
+                        "owasp_category": "A02:2025-Cryptographic Failures",
                         "severity": "Low",
                         "title": "Mixed Content (Insecure HTTP Resource in HTTPS)",
                         "description": f"The HTTPS page references resources over plain unencrypted HTTP ({sample}).",

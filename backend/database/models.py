@@ -43,7 +43,7 @@ class Finding(Base):
     id = Column(Integer, primary_key=True, index=True)
     scan_id = Column(Integer, ForeignKey("scans.id"), nullable=False)
     category = Column(String(100), nullable=False) # sqli, xss, idor, auth, upload, headers, exposure, static
-    owasp_category = Column(String(100), default="A01:2021-Broken Access Control")
+    owasp_category = Column(String(100), default="A01:2025-Broken Access Control")
     severity = Column(String(20), default="Medium") # Critical, High, Medium, Low, Informational
     title = Column(String(255), nullable=False)
     description = Column(Text, default="")
