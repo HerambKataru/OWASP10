@@ -78,6 +78,23 @@ The frontend web workstation will open on: **`http://localhost:5173`**
 
 ---
 
+## 🔐 Firebase Authentication & Access Control
+
+SentinelX is protected by a secure authentication layer powered by **Firebase Auth**:
+
+1. **Accessing the Workstation**:
+   - Navigate to `http://localhost:5173/login`
+   - You can sign in using **Email & Password**, **Sign in with Google**, or click **1-Click Instant Analyst Access (Demo)** for immediate local diagnostic testing.
+2. **Connecting your own Firebase Project (Optional)**:
+   - In `sentinelx/frontend/`, copy `.env.example` to `.env`:
+     ```bash
+     cp sentinelx/frontend/.env.example sentinelx/frontend/.env
+     ```
+   - Paste your Firebase Web App credentials (`VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, etc.) from your Firebase Console.
+   - Restart the frontend dev server (`npm run dev`).
+
+---
+
 ## 🔑 Where and How to Add Threat Intelligence API Keys
 
 SentinelX supports seamless threat intelligence enrichment through **VirusTotal**, **AbuseIPDB**, and **Shodan**. You can configure your API keys using **either of two convenient methods**:

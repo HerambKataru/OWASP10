@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  sentinelx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentinelx_workstation
+    ports:
+      - "8000:8000"
+    environment:
+      - SENTINELX_SECRET_KEY=sentinelx_secret_master_vapt_key_2026
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY:-}
+      - ABUSEIPDB_API_KEY=${ABUSEIPDB_API_KEY:-}
+      - SHODAN_API_KEY=${SHODAN_API_KEY:-}
+    volumes:
+      - sentinelx_data:/app/backend/sentinelx.db
+      - sentinelx_reports:/app/backend/reports
+      - sentinelx_uploads:/app/backend/uploads
+    restart: unless-stopped
+
+volumes:
+  sentinelx_data:
+  sentinelx_reports:
+  sentinelx_uploads:

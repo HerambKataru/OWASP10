@@ -1,7 +1,11 @@
+import os
 import logging
+from pathlib import Path
 import uvicorn
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from database.session import init_db
 from services.websocket_manager import ws_manager
 
@@ -24,7 +28,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS for React Frontend (running on localhost)
+# Enable CORS for Frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -38,7 +42,7 @@ app.add_middleware(
 def on_startup():
     logger.info("Initializing SentinelX SQLite Database...")
     init_db()
-    logger.info("SentinelX Backend Engine Initialized Successfully on localhost:8000")
+    logger.info("SentinelX Backend Engine Initialized Successfully on port 8000")
 
 # WebSocket for real-time live terminal & progress
 @app.websocket("/ws/logs")
@@ -63,14 +67,34 @@ app.include_router(intel_router)
 app.include_router(reports_router)
 app.include_router(settings_router)
 
-@app.get("/")
-def root():
-    return {
-        "name": "SentinelX Local Security Workstation",
-        "status": "online",
-        "docs": "/docs",
-        "version": "1.0.0"
-    }
+# Production Static File Mounting (if frontend build dist exists)
+BASE_DIR = Path(__file__).resolve().parent
+DIST_DIRS = [
+    BASE_DIR.parent / "frontend_dist",
+    BASE_DIR.parent / "frontend" / "dist"
+]
+
+frontend_dist = next((d for d in DIST_DIRS if d.exists() and (d / "index.html").exists()), None)
+
+if frontend_dist:
+    logger.info(f"Mounting production frontend build from: {frontend_dist}")
+    app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend_spa(full_path: str):
+        file_path = frontend_dist / full_path
+        if file_path.exists() and file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(frontend_dist / "index.html")
+else:
+    @app.get("/")
+    def root():
+        return {
+            "name": "SentinelX Local Security Workstation",
+            "status": "online",
+            "docs": "/docs",
+            "version": "1.0.0"
+        }
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
